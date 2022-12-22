@@ -3,3 +3,6 @@
 # Added by cargo
 
 /target
+
+# image output
+image.ppm
