@@ -3,6 +3,7 @@ mod utils;
 mod prelude {
     pub use crate::utils::vec4::{Color, Point};
     pub use crate::ray_tracer::camera::PerspectiveCamera;
+    pub use crate::ray_tracer::engine::render;
 }
 
 use prelude::*;
@@ -18,6 +19,7 @@ const FOCAL_LENGTH: f32 = 1.0;
 
 fn main() {
     let camera = PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2);
+    let output = render(camera, IMAGE_HEIGHT, IMAGE_WIDTH);
 
     /* -------------------------------------------------------------------------- */
     /*                          WRITE IMAGE DATA TO FILE                          */
@@ -28,18 +30,13 @@ fn main() {
 
     // Following natural co-ordinate system (y up, x right)
     for row in (0..IMAGE_HEIGHT).rev() {
-        // * Notice the use of standard error here, since
-        // * standard output is used for the image data.
+        // * Notice the use of stderr here, since
+        // * stdout is used for the image data.
         eprint!("\rScanlines remaining: {:3}", row);
         stderr().flush().unwrap();
 
         for column in 0..IMAGE_WIDTH {
-            let r = (column as f32) / ((IMAGE_WIDTH - 1) as f32);
-            let g = (row as f32) / ((IMAGE_HEIGHT - 1) as f32);
-            let b = 0.25;
-
-            let pixel_color = Color::new(r, g, b, 1.0);
-
+            let pixel_color = output[row as usize][column as usize];
             println!("{}", pixel_color.format_color());
         }
     }
