@@ -2,9 +2,10 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, 
 
 #[derive(Clone, Copy)]
 pub struct Vec4 {
-    e: [f32; 4],
+    pub e: [f32; 4],
 }
 
+/// Color domain per channel => [0, 1]
 pub type Color = Vec4;
 pub type Point = Vec4;
 
@@ -13,42 +14,49 @@ impl Vec4 {
         Self { e: [x, y, z, w] }
     }
 
-    pub fn x(self) -> f32 {
+    pub fn x(&self) -> f32 {
         self.e[0]
     }
 
-    pub fn y(self) -> f32 {
+    pub fn y(&self) -> f32 {
         self.e[1]
     }
 
-    pub fn z(self) -> f32 {
+    pub fn z(&self) -> f32 {
         self.e[2]
     }
 
-    pub fn w(self) -> f32 {
+    pub fn w(&self) -> f32 {
         self.e[3]
     }
 
-    pub fn dot(self, other: Self) -> f32 {
+    pub fn dot(&self, other: Self) -> f32 {
         self[0] * other[0] + self[1] * other[1] + self[2] * other[2] + self[3] * other[3]
     }
 
-    pub fn length(self) -> f32 {
-        self.dot(self).sqrt()
+    pub fn length(&self) -> f32 {
+        self.dot(*self).sqrt()
     }
 
-    pub fn cross(self, other: Self) -> Self {
+    pub fn cross(&self, other: Self) -> Self {
         // TODO: Implement this
         Self::new(0., 0., 0., 0.)
     }
 
-    pub fn normalise(self) -> Self {
-        self / self.length()
+    /// Returns the current vector normalized
+    pub fn normalised(&self) -> Self {
+        *self / self.length()
+    }
+
+    /// Returns a copy of the vector, normalized
+    pub fn normalise(&self) -> Self {
+        let new_point = *self; // this creates a copy (since we have Copy trait)
+        new_point / self.length()
     }
 
     // TODO: Need a better mechanism for this
     // ! Unclear about 255.99
-    pub fn format_color(self) -> String {
+    pub fn format_color(&self) -> String {
         format!(
             "{} {} {}",
             (self[0] * 255.99) as u32,

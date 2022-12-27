@@ -3,7 +3,7 @@ mod utils;
 mod prelude {
     pub use crate::utils::vec4::{Color, Point};
     pub use crate::ray_tracer::camera::PerspectiveCamera;
-    pub use crate::ray_tracer::engine::render;
+    pub use crate::ray_tracer::engine::Engine;
 }
 
 use prelude::*;
@@ -19,7 +19,8 @@ const FOCAL_LENGTH: f32 = 1.0;
 
 fn main() {
     let camera = PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2);
-    let output = render(camera, IMAGE_HEIGHT, IMAGE_WIDTH);
+    let engine = Engine::new(camera, IMAGE_HEIGHT, IMAGE_WIDTH);
+    let output: Vec<Vec<Color>> = engine.render();
 
     /* -------------------------------------------------------------------------- */
     /*                          WRITE IMAGE DATA TO FILE                          */

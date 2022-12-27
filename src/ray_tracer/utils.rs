@@ -2,7 +2,7 @@ use crate::utils::vec4::Point;
 
 pub struct Ray {
     pub origin: Point,
-    direction: Point,
+    pub direction: Point,
 }
 
 impl Ray {
@@ -10,7 +10,7 @@ impl Ray {
         Self { origin, direction }
     }
 
-    pub fn at(self, t: f32) -> Point {
+    pub fn at(&self, t: f32) -> Point {
         self.origin + (self.direction * t)
     }
 }
