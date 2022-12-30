@@ -1,4 +1,5 @@
 use super::{camera::PerspectiveCamera, utils::Ray};
+use crate::scene::Scene;
 use crate::utils::vec4::Color;
 
 const WHITE: Color = Color {
@@ -7,23 +8,39 @@ const WHITE: Color = Color {
 const BLUE: Color = Color {
     e: [130. / 255., 170. / 255., 227. / 255., 1.],
 };
+const RED: Color = Color {
+    e: [1., 0., 0., 1.],
+};
 
 pub struct Engine {
     camera: PerspectiveCamera,
+    scene: Scene,
     image_height: u32,
     image_width: u32,
 }
 
 impl Engine {
-    pub fn new(camera: PerspectiveCamera, image_height: u32, image_width: u32) -> Self {
+    pub fn new(
+        camera: PerspectiveCamera,
+        scene: Scene,
+        image_height: u32,
+        image_width: u32,
+    ) -> Self {
         Self {
             camera,
+            scene,
             image_height,
             image_width,
         }
     }
 
     pub fn ray_color(&self, ray: &Ray) -> Color {
+        for object in &self.scene.objects {
+            if object.is_ray_hit(ray) {
+                return RED;
+            }
+        }
+
         let y = ray.direction.normalise().y(); // -1 <= y <= 1
         let t = 0.5 * (y + 1.); // scaling => 0 <= t <= 1
 

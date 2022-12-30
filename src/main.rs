@@ -1,13 +1,17 @@
 mod ray_tracer;
+mod object_lib;
+mod scene;
 mod utils;
 mod prelude {
-    pub use crate::utils::vec4::{Color, Point};
+    pub use crate::object_lib::sphere::Sphere;
     pub use crate::ray_tracer::camera::PerspectiveCamera;
     pub use crate::ray_tracer::engine::Engine;
+    pub use crate::scene::Scene;
+    pub use crate::utils::vec4::{Color, Point};
+    pub use std::io::{stderr, Write};
 }
 
 use prelude::*;
-use std::io::{stderr, Write};
 
 // * This is the rendered image (the canvas) dimensions
 // * This as of now matches the virtual viewport AR for square pixels
@@ -18,8 +22,14 @@ const IMAGE_WIDTH: u32 = (ASPECT_RATIO * (IMAGE_HEIGHT as f32)) as u32;
 const FOCAL_LENGTH: f32 = 1.0;
 
 fn main() {
+    let mut scene = Scene::new();
+    scene.add(Box::new(Sphere::new(
+        0.5,
+        Point::new(0., 0., -1., 0.),
+    )));
+
     let camera = PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2);
-    let engine = Engine::new(camera, IMAGE_HEIGHT, IMAGE_WIDTH);
+    let engine = Engine::new(camera, scene, IMAGE_HEIGHT, IMAGE_WIDTH);
     let output: Vec<Vec<Color>> = engine.render();
 
     /* -------------------------------------------------------------------------- */
