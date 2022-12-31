@@ -1,4 +1,7 @@
-use super::{camera::PerspectiveCamera, utils::Ray};
+use super::{
+    camera::PerspectiveCamera,
+    utils::{map_to_range, Ray},
+};
 use crate::scene::Scene;
 use crate::utils::vec4::Color;
 
@@ -11,6 +14,9 @@ const BLUE: Color = Color {
 const RED: Color = Color {
     e: [1., 0., 0., 1.],
 };
+
+const T_MIN: f32 = 0.;
+const T_MAX: f32 = 100.;
 
 pub struct Engine {
     camera: PerspectiveCamera,
@@ -36,13 +42,19 @@ impl Engine {
 
     pub fn ray_color(&self, ray: &Ray) -> Color {
         for object in &self.scene.objects {
-            if object.is_ray_hit(ray) {
-                return RED;
-            }
+            match object.is_ray_hit(ray, T_MIN, T_MAX) {
+                Some(hit_record) => {
+                    let r = map_to_range(hit_record.normal.x(), -1., 1., 0., 1.);
+                    let g = map_to_range(hit_record.normal.y(), -1., 1., 0., 1.);
+                    let b = map_to_range(hit_record.normal.z(), -1., 1., 0., 1.);
+                    return Color::new(r, g, b, 1.);
+                }
+                None => (),
+            };
         }
 
         let y = ray.direction.normalise().y(); // -1 <= y <= 1
-        let t = 0.5 * (y + 1.); // scaling => 0 <= t <= 1
+        let t = map_to_range(y, -1., 1., 0., 1.);
 
         WHITE * (1. - t) + BLUE * t
     }

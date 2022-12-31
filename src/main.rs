@@ -1,5 +1,5 @@
-mod ray_tracer;
 mod object_lib;
+mod ray_tracer;
 mod scene;
 mod utils;
 mod prelude {
@@ -26,6 +26,10 @@ fn main() {
     scene.add(Box::new(Sphere::new(
         0.5,
         Point::new(0., 0., -1., 0.),
+    )));
+    scene.add(Box::new(Sphere::new(
+        100.0,
+        Point::new(0.0, -100.5, -1.0, 0.),
     )));
 
     let camera = PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2);

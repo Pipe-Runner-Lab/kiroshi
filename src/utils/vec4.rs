@@ -43,9 +43,9 @@ impl Vec4 {
         Self::new(0., 0., 0., 0.)
     }
 
-    /// Returns the current vector normalized
-    pub fn normalised(&self) -> Self {
-        *self / self.length()
+    /// Normalises the vector in place
+    pub fn normalised(&mut self) {
+        *self /= self.length();
     }
 
     /// Returns a copy of the vector, normalized
