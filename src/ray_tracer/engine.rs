@@ -1,6 +1,6 @@
 use super::{
     camera::PerspectiveCamera,
-    utils::{map_to_range, Ray},
+    utils::{map_to_range, Ray}, object_base::HitRecord,
 };
 use crate::scene::Scene;
 use crate::utils::vec4::Color;
@@ -41,16 +41,33 @@ impl Engine {
     }
 
     pub fn ray_color(&self, ray: &Ray) -> Color {
+        // keeps track of closest hit t value for the ray
+        let mut closest_hit_record: Option<HitRecord> = None;
+
+        // TODO: Optimise this loop and nesting
         for object in &self.scene.objects {
             match object.is_ray_hit(ray, T_MIN, T_MAX) {
                 Some(hit_record) => {
-                    let r = map_to_range(hit_record.normal.x(), -1., 1., 0., 1.);
-                    let g = map_to_range(hit_record.normal.y(), -1., 1., 0., 1.);
-                    let b = map_to_range(hit_record.normal.z(), -1., 1., 0., 1.);
-                    return Color::new(r, g, b, 1.);
+                    match &closest_hit_record {
+                        Some(temp_hit_record) => {
+                            if hit_record.t < temp_hit_record.t {
+                                closest_hit_record = Some(hit_record);
+                            }
+                        },
+                        None => {
+                            closest_hit_record = Some(hit_record);
+                        }
+                    }
                 }
                 None => (),
             };
+        }
+
+        if let Some(hit_record) = closest_hit_record{
+            let r = map_to_range(hit_record.normal.x(), -1., 1., 0., 1.);
+            let g = map_to_range(hit_record.normal.y(), -1., 1., 0., 1.);
+            let b = map_to_range(hit_record.normal.z(), -1., 1., 0., 1.);
+            return Color::new(r, g, b, 1.);
         }
 
         let y = ray.direction.normalise().y(); // -1 <= y <= 1

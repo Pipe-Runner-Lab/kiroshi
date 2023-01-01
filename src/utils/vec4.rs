@@ -39,8 +39,12 @@ impl Vec4 {
     }
 
     pub fn cross(&self, other: Self) -> Self {
-        // TODO: Implement this
-        Self::new(0., 0., 0., 0.)
+        Self::new(
+            self.e[1] * other.e[2] - self.e[2] * other.e[1],
+            -(self.e[0] * other.e[2] - self.e[2] * other.e[0]),
+            self.e[0] * other.e[1] - self.e[1] * other.e[0],
+            0.,
+        )
     }
 
     /// Normalises the vector in place
@@ -153,7 +157,12 @@ impl Mul<f32> for Vec4 {
     type Output = Self;
 
     fn mul(self, rhs: f32) -> Self {
-        Self::new(self[0] * rhs, self[1] * rhs, self[2] * rhs, self[3] * rhs)
+        Self::new(
+            self[0] * rhs,
+            self[1] * rhs,
+            self[2] * rhs,
+            self[3] * rhs,
+        )
     }
 }
 
@@ -172,16 +181,25 @@ impl Div<f32> for Vec4 {
     type Output = Self;
 
     fn div(self, rhs: f32) -> Self {
-        // TODO: Check if rhs is 0
+        if rhs == 0. {
+            panic!("Zero division error!");
+        }
 
-        Self::new(self[0] / rhs, self[1] / rhs, self[2] / rhs, self[3] / rhs)
+        Self::new(
+            self[0] / rhs,
+            self[1] / rhs,
+            self[2] / rhs,
+            self[3] / rhs,
+        )
     }
 }
 
 // * Multiplying with another vector (We are doing a scalar multiplication here)
 impl DivAssign<f32> for Vec4 {
     fn div_assign(&mut self, rhs: f32) {
-        // TODO: Check if rhs is 0
+        if rhs == 0. {
+            panic!("Zero division error!");
+        }
 
         self[0] /= rhs;
         self[1] /= rhs;

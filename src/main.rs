@@ -15,7 +15,8 @@ use prelude::*;
 
 // * This is the rendered image (the canvas) dimensions
 // * This as of now matches the virtual viewport AR for square pixels
-const ASPECT_RATIO: f32 = 16.0 / 9.0;
+//TODO: Having issues with 16/9 (non-integral values for AR)
+const ASPECT_RATIO: f32 = 16.0 / 8.0;
 const IMAGE_HEIGHT: u32 = 256;
 const IMAGE_WIDTH: u32 = (ASPECT_RATIO * (IMAGE_HEIGHT as f32)) as u32;
 
