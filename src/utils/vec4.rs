@@ -58,14 +58,14 @@ impl Vec4 {
         new_point / self.length()
     }
 
-    // TODO: Need a better mechanism for this
+    // TODO: Need a better mechanism for this + move somewhere else
     // ! Unclear about 255.99
     pub fn format_color(&self) -> String {
         format!(
             "{} {} {}",
-            (self[0] * 255.99) as u32,
-            (self[1] * 255.99) as u32,
-            (self[2] * 255.99) as u32
+            ((self[0].clamp(0., 0.999) * 256.) as u32),
+            (self[1].clamp(0., 0.999) * 256.) as u32,
+            (self[2].clamp(0., 0.999) * 256.) as u32
         )
     }
 }

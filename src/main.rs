@@ -9,9 +9,12 @@ mod prelude {
     pub use crate::scene::Scene;
     pub use crate::utils::vec4::{Color, Point};
     pub use std::io::{stderr, Write};
+    pub use indicatif::ProgressBar;
 }
 
 use prelude::*;
+
+use crate::ray_tracer::camera_base::Camera;
 
 // * This is the rendered image (the canvas) dimensions
 // * This as of now matches the virtual viewport AR for square pixels
@@ -23,6 +26,8 @@ const IMAGE_WIDTH: u32 = (ASPECT_RATIO * (IMAGE_HEIGHT as f32)) as u32;
 const FOCAL_LENGTH: f32 = 1.0;
 
 fn main() {
+    let progress_bar = ProgressBar::new(IMAGE_HEIGHT as u64);
+
     let mut scene = Scene::new();
     scene.add(Box::new(Sphere::new(
         0.5,
@@ -33,8 +38,8 @@ fn main() {
         Point::new(0.0, -100.5, -1.0, 0.),
     )));
 
-    let camera = PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2);
-    let engine = Engine::new(camera, scene, IMAGE_HEIGHT, IMAGE_WIDTH);
+    let camera: Box<dyn Camera> = Box::new(PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2));
+    let engine = Engine::new(camera, scene, IMAGE_HEIGHT, IMAGE_WIDTH, true, 100);
     let output: Vec<Vec<Color>> = engine.render();
 
     /* -------------------------------------------------------------------------- */
@@ -48,13 +53,16 @@ fn main() {
     for row in (0..IMAGE_HEIGHT).rev() {
         // * Notice the use of stderr here, since
         // * stdout is used for the image data.
-        eprint!("\rScanlines remaining: {:3}", row);
-        stderr().flush().unwrap();
+        // eprint!("\rScanlines remaining: {:3}", row);
+        // stderr().flush().unwrap();
+        progress_bar.inc(1);
 
         for column in 0..IMAGE_WIDTH {
+            // TODO: Move to PNG
             let pixel_color = output[row as usize][column as usize];
             println!("{}", pixel_color.format_color());
         }
     }
-    eprintln!("\nDone");
+    // eprintln!("\nDone");
+    progress_bar.finish_with_message("done");
 }
