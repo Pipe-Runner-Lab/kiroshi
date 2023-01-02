@@ -1,5 +1,5 @@
 use crate::ray_tracer::{
-    object_base::{HitRecord, ObjectBase},
+    interface::object_base::{HitRecord, ObjectBase},
     utils::Ray,
 };
 use crate::utils::vec4::Point;

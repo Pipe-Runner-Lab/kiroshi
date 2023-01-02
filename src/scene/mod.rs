@@ -1,4 +1,4 @@
-use crate::ray_tracer::object_base::ObjectBase;
+use crate::ray_tracer::interface::object_base::ObjectBase;
 
 pub struct Scene {
     pub objects: Vec<Box<dyn ObjectBase>>,

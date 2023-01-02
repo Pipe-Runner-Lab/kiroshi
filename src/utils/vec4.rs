@@ -1,4 +1,8 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign};
+use rand::prelude::*;
+use std::{
+    f32::consts::PI,
+    ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign},
+};
 
 #[derive(Clone, Copy)]
 pub struct Vec4 {
@@ -67,6 +71,18 @@ impl Vec4 {
             (self[1].clamp(0., 0.999) * 256.) as u32,
             (self[2].clamp(0., 0.999) * 256.) as u32
         )
+    }
+
+    // TODO: Does not account for w
+    pub fn random_in_unit_sphere() -> Self {
+        let mut rng = rand::thread_rng();
+        let r = rng.gen::<f32>();
+        let alpha = (rng.gen::<f32>() - 0.5) * PI; // in radians (-pi/2, pi/2)
+        let theta = rng.gen::<f32>() * 2. * PI; // in radians (0, 2pi)
+
+        Self {
+            e: [r * alpha.cos(), r * theta.sin(), r * alpha.sin(), 0.],
+        }
     }
 }
 

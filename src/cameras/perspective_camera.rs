@@ -1,5 +1,4 @@
-use super::camera_base::Camera;
-use super::utils::Ray;
+use crate::ray_tracer::{interface::camera_base::Camera, utils::Ray};
 use crate::utils::vec4::Point;
 
 // The size of the virtual viewport if important since it is relative to the virtual world

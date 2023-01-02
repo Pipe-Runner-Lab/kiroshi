@@ -1,4 +1,4 @@
-use super::utils::Ray;
+use super::super::utils::Ray;
 
 pub trait Camera {
     // * The reason why we are generating rays from camera is because this will let us

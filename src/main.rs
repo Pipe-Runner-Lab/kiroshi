@@ -1,20 +1,16 @@
-mod object_lib;
+use std::io::{stderr, Write};
+use indicatif::ProgressBar;
+use crate::cameras::perspective_camera::PerspectiveCamera;
+use crate::objects::sphere::Sphere;
+use crate::ray_tracer::{engine::Engine, interface::camera_base::Camera};
+use crate::scene::Scene;
+use crate::utils::vec4::{Color, Point};
+
+mod objects;
+mod cameras;
 mod ray_tracer;
 mod scene;
 mod utils;
-mod prelude {
-    pub use crate::object_lib::sphere::Sphere;
-    pub use crate::ray_tracer::camera::PerspectiveCamera;
-    pub use crate::ray_tracer::engine::Engine;
-    pub use crate::scene::Scene;
-    pub use crate::utils::vec4::{Color, Point};
-    pub use std::io::{stderr, Write};
-    pub use indicatif::ProgressBar;
-}
-
-use prelude::*;
-
-use crate::ray_tracer::camera_base::Camera;
 
 // * This is the rendered image (the canvas) dimensions
 // * This as of now matches the virtual viewport AR for square pixels
