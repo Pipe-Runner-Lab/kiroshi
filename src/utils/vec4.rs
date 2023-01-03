@@ -4,6 +4,8 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign},
 };
 
+const EPSILON: f32 = 1.0e-8;
+
 #[derive(Clone, Copy)]
 pub struct Vec4 {
     pub e: [f32; 4],
@@ -74,15 +76,20 @@ impl Vec4 {
     }
 
     // TODO: Does not account for w
+    // TODO: Might give out zero vector
     pub fn random_in_unit_sphere() -> Self {
         let mut rng = rand::thread_rng();
         let r = rng.gen::<f32>();
-        let alpha = (rng.gen::<f32>() - 0.5) * PI; // in radians (-pi/2, pi/2)
-        let theta = rng.gen::<f32>() * 2. * PI; // in radians (0, 2pi)
+        let theta = (rng.gen::<f32>() - 0.5) * PI; // in radians (-pi/2, pi/2)
+        let alpha = rng.gen::<f32>() * 2. * PI; // in radians (0, 2pi)
 
         Self {
             e: [r * alpha.cos(), r * theta.sin(), r * alpha.sin(), 0.],
         }
+    }
+
+    pub fn is_degenerate(&self) -> bool {
+        self.length() < EPSILON
     }
 }
 

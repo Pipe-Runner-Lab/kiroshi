@@ -1,13 +1,15 @@
-use std::io::{stderr, Write};
-use indicatif::ProgressBar;
 use crate::cameras::perspective_camera::PerspectiveCamera;
+use crate::materials::lambertian::Lambertian;
 use crate::objects::sphere::Sphere;
 use crate::ray_tracer::{engine::Engine, interface::camera_base::Camera};
 use crate::scene::Scene;
 use crate::utils::vec4::{Color, Point};
+use indicatif::ProgressBar;
+use std::rc::Rc;
 
-mod objects;
 mod cameras;
+mod materials;
+mod objects;
 mod ray_tracer;
 mod scene;
 mod utils;
@@ -24,18 +26,34 @@ const FOCAL_LENGTH: f32 = 1.0;
 fn main() {
     let progress_bar = ProgressBar::new(IMAGE_HEIGHT as u64);
 
+    let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0, 1.0)));
+    let mat_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3, 1.0)));
+
     let mut scene = Scene::new();
     scene.add(Box::new(Sphere::new(
         0.5,
         Point::new(0., 0., -1., 0.),
+        mat_center,
     )));
     scene.add(Box::new(Sphere::new(
         100.0,
         Point::new(0.0, -100.5, -1.0, 0.),
+        mat_ground,
     )));
 
-    let camera: Box<dyn Camera> = Box::new(PerspectiveCamera::new(ASPECT_RATIO, FOCAL_LENGTH, 2));
-    let engine = Engine::new(camera, scene, IMAGE_HEIGHT, IMAGE_WIDTH, true, 100);
+    let camera: Box<dyn Camera> = Box::new(PerspectiveCamera::new(
+        ASPECT_RATIO,
+        FOCAL_LENGTH,
+        2,
+    ));
+    let engine = Engine::new(
+        camera,
+        scene,
+        IMAGE_HEIGHT,
+        IMAGE_WIDTH,
+        true,
+        100,
+    );
     let output: Vec<Vec<Color>> = engine.render();
 
     /* -------------------------------------------------------------------------- */

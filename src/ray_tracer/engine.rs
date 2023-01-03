@@ -86,15 +86,13 @@ impl Engine {
             // return Color::new(r, g, b, 1.);
 
             // reflect and attenuate
-            let new_ray = Ray::new(
-                hit_record.point_of_intersection,
-                ((Point::random_in_unit_sphere() +
-                    hit_record.normal +
-                    hit_record.point_of_intersection) -
-                    hit_record.point_of_intersection)
-                    .normalise(),
-            );
-            return self.ray_color(&new_ray, depth + 1) * ATTENUATION;
+            if let Some((material_color, new_ray)) =
+                hit_record.material.generate_reflected_ray(ray, &hit_record)
+            {
+                return self.ray_color(&new_ray, depth + 1) * ATTENUATION;
+            }
+
+            return BLACK; // if light fully absorbed then return black
         }
 
         let y = ray.direction.normalise().y(); // -1 <= y <= 1

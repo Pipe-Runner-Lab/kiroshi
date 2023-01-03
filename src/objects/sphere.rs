@@ -1,5 +1,6 @@
+use std::rc::Rc;
 use crate::ray_tracer::{
-    interface::object_base::{HitRecord, ObjectBase},
+    interface::{object_base::{HitRecord, Object}, material_base::Material},
     utils::Ray,
 };
 use crate::utils::vec4::Point;
@@ -7,15 +8,16 @@ use crate::utils::vec4::Point;
 pub struct Sphere {
     radius: f32,
     center: Point,
+    material: Rc<dyn Material> // TODO: Why can't this not be done using just reference or Box
 }
 
 impl Sphere {
-    pub fn new(radius: f32, center: Point) -> Self {
-        Self { radius, center }
+    pub fn new(radius: f32, center: Point, material: Rc<dyn Material>) -> Self {
+        Self { radius, center, material }
     }
 }
 
-impl ObjectBase for Sphere {
+impl Object for Sphere {
     fn is_ray_hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         let a = ray.direction.dot(ray.direction);
@@ -36,7 +38,8 @@ impl ObjectBase for Sphere {
             Some(HitRecord {
                 point_of_intersection,
                 normal,
-                t
+                t,
+                material: Rc::clone(&self.material)
             })
         }
     }

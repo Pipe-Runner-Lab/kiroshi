@@ -43,10 +43,11 @@ impl PerspectiveCamera {
 
 impl Camera for PerspectiveCamera {
     fn generate_ray(&self, u: f32, v: f32) -> Ray {
-        let direction = self.lower_left_corner +
+        let direction = (self.lower_left_corner +
             (self.horizontal_offset_vec * u) +
             (self.vertical_offset_vec * v) -
-            self.origin;
+            self.origin)
+            .normalise();
 
         Ray::new(self.origin, direction)
     }

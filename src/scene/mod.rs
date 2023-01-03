@@ -1,7 +1,7 @@
-use crate::ray_tracer::interface::object_base::ObjectBase;
+use crate::ray_tracer::interface::object_base::Object;
 
 pub struct Scene {
-    pub objects: Vec<Box<dyn ObjectBase>>,
+    pub objects: Vec<Box<dyn Object>>,
 }
 
 impl Scene {
@@ -9,7 +9,7 @@ impl Scene {
         Scene { objects: vec![] }
     }
 
-    pub fn add(&mut self, obj: Box<dyn ObjectBase>) {
+    pub fn add(&mut self, obj: Box<dyn Object>) {
         self.objects.push(obj);
     }
 }
