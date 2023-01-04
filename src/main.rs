@@ -1,5 +1,6 @@
 use crate::cameras::perspective_camera::PerspectiveCamera;
 use crate::materials::lambertian::Lambertian;
+use crate::materials::metal::Metal;
 use crate::objects::sphere::Sphere;
 use crate::ray_tracer::{engine::Engine, interface::camera_base::Camera};
 use crate::scene::Scene;
@@ -28,12 +29,24 @@ fn main() {
 
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0, 1.0)));
     let mat_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3, 1.0)));
+    let mat_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8, 1.)));
+    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2, 1.)));
 
     let mut scene = Scene::new();
     scene.add(Box::new(Sphere::new(
         0.5,
         Point::new(0., 0., -1., 0.),
         mat_center,
+    )));
+    scene.add(Box::new(Sphere::new(
+        0.5,
+        Point::new(-1., 0., -1., 0.),
+        mat_left,
+    )));
+    scene.add(Box::new(Sphere::new(
+        0.5,
+        Point::new(1., 0., -1., 0.),
+        mat_right,
     )));
     scene.add(Box::new(Sphere::new(
         100.0,

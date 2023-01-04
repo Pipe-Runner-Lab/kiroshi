@@ -16,7 +16,6 @@ const BLUE: Color = Color {
 const BLACK: Color = Color {
     e: [0. / 255., 0. / 255., 0. / 255., 1.],
 };
-const ATTENUATION: f32 = 0.5;
 const MAX_REFLECTION_DEPTH: u8 = 5;
 
 const T_MIN: f32 = 0.0001; // not 0 to avoid shadow acne
@@ -86,10 +85,10 @@ impl Engine {
             // return Color::new(r, g, b, 1.);
 
             // reflect and attenuate
-            if let Some((material_color, new_ray)) =
+            if let Some((attenuated_color, new_ray)) =
                 hit_record.material.generate_reflected_ray(ray, &hit_record)
             {
-                return self.ray_color(&new_ray, depth + 1) * ATTENUATION;
+                return self.ray_color(&new_ray, depth + 1) * attenuated_color;
             }
 
             return BLACK; // if light fully absorbed then return black

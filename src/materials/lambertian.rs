@@ -3,7 +3,7 @@ use crate::ray_tracer::{interface::material_base::Material, utils::Ray};
 use crate::utils::vec4::{Color, Point};
 
 pub struct Lambertian {
-    albedo: Color, // the diffused color of the material
+    albedo: Color, // the % of r,g,b the material will reflect
 }
 
 impl Lambertian {
@@ -27,6 +27,6 @@ impl Material for Lambertian {
         );
 
         // TODO: copies vec4 here (can we avoid this?)
-        Some((self.albedo, new_ray))
+        Some((self.albedo * new_ray.direction.dot(hit_record.normal), new_ray))
     }
 }
