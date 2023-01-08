@@ -1,4 +1,5 @@
 use crate::cameras::perspective_camera::PerspectiveCamera;
+use crate::materials::dielectric::Dielectric;
 use crate::materials::lambertian::Lambertian;
 use crate::materials::metal::Metal;
 use crate::objects::sphere::Sphere;
@@ -29,7 +30,7 @@ fn main() {
 
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0, 1.0)));
     let mat_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3, 1.0)));
-    let mat_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8, 1.), None));
+    let mat_left = Rc::new(Dielectric::new(Color::new(1., 1., 1., 1.0), 1.5));
     let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2, 1.), Some(0.9)));
 
     let mut scene = Scene::new();
