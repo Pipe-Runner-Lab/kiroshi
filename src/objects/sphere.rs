@@ -44,7 +44,13 @@ impl Object for Sphere {
             }
 
             let point_of_intersection = ray.at(t);
-            let normal = (point_of_intersection - self.center).normalise();
+            let mut normal = (point_of_intersection - self.center).normalise();
+
+            // if radius is negative, turn turn sphere inside out
+            if self.radius < 0. {
+                normal *= -1.;
+            }
+
             Some(HitRecord {
                 point_of_intersection,
                 normal,

@@ -31,6 +31,7 @@ fn main() {
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0, 1.0)));
     let mat_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3, 1.0)));
     let mat_left = Rc::new(Dielectric::new(Color::new(1., 1., 1., 1.0), 1.5));
+    let mat_left_inner = Rc::new(Dielectric::new(Color::new(1., 1., 1., 1.0), 1.5));
     let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2, 1.), Some(0.9)));
 
     let mut scene = Scene::new();
@@ -43,6 +44,11 @@ fn main() {
         0.5,
         Point::new(-1., 0., -1., 0.),
         mat_left,
+    )));
+    scene.add(Box::new(Sphere::new(
+        -0.4,
+        Point::new(-1., 0., -1., 0.),
+        mat_left_inner,
     )));
     scene.add(Box::new(Sphere::new(
         0.5,
