@@ -1,19 +1,26 @@
-use std::rc::Rc;
 use crate::ray_tracer::{
-    interface::{object_base::{HitRecord, Object}, material_base::Material},
+    interface::{
+        material_base::Material,
+        object_base::{HitRecord, Object},
+    },
     utils::Ray,
 };
 use crate::utils::vec4::Point;
+use std::rc::Rc;
 
 pub struct Sphere {
     radius: f32,
     center: Point,
-    material: Rc<dyn Material> // TODO: Why can't this not be done using just reference or Box
+    material: Rc<dyn Material>, // TODO: Why can't this not be done using just reference or Box
 }
 
 impl Sphere {
     pub fn new(radius: f32, center: Point, material: Rc<dyn Material>) -> Self {
-        Self { radius, center, material }
+        Self {
+            radius,
+            center,
+            material,
+        }
     }
 }
 
@@ -28,9 +35,12 @@ impl Object for Sphere {
         if discriminant < 0. {
             None
         } else {
-            let t = (-half_b - discriminant.sqrt()) / a;
-            if t < t_min || t_max < t{
-                return None;
+            let mut t = (-half_b - discriminant.sqrt()) / a; // check the first point
+            if t < t_min || t_max < t {
+                t = (-half_b + discriminant.sqrt()) / a; // check the 2nd point
+                if t < t_min || t_max < t {
+                    return None;
+                }
             }
 
             let point_of_intersection = ray.at(t);
@@ -39,7 +49,7 @@ impl Object for Sphere {
                 point_of_intersection,
                 normal,
                 t,
-                material: Rc::clone(&self.material)
+                material: Rc::clone(&self.material),
             })
         }
     }
