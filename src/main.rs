@@ -5,8 +5,7 @@ use crate::materials::metal::Metal;
 use crate::objects::sphere::Sphere;
 use crate::ray_tracer::{engine::Engine, interface::camera_base::Camera};
 use crate::scene::Scene;
-use crate::utils::vec4::{Color, Point};
-use indicatif::ProgressBar;
+use crate::utils::vec4::{Color, Point, Vec4};
 use std::rc::Rc;
 
 mod cameras;
@@ -26,13 +25,14 @@ const IMAGE_WIDTH: u32 = (ASPECT_RATIO * (IMAGE_HEIGHT as f32)) as u32;
 const FOCAL_LENGTH: f32 = 1.0;
 
 fn main() {
-    let progress_bar = ProgressBar::new(IMAGE_HEIGHT as u64);
-
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0, 1.0)));
     let mat_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3, 1.0)));
     let mat_left = Rc::new(Dielectric::new(Color::new(1., 1., 1., 1.0), 1.5));
     let mat_left_inner = Rc::new(Dielectric::new(Color::new(1., 1., 1., 1.0), 1.5));
-    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2, 1.), Some(0.9)));
+    let mat_right = Rc::new(Metal::new(
+        Color::new(0.8, 0.6, 0.2, 1.),
+        Some(0.9),
+    ));
 
     let mut scene = Scene::new();
     scene.add(Box::new(Sphere::new(
@@ -64,7 +64,10 @@ fn main() {
     let camera: Box<dyn Camera> = Box::new(PerspectiveCamera::new(
         ASPECT_RATIO,
         FOCAL_LENGTH,
-        2,
+        90.,
+        Point::new(-2., 2., 1., 0.),
+        Point::new(0., 0., -1., 0.),
+        Vec4::new(0., 1., 0., 0.),
     ));
     let engine = Engine::new(
         camera,
@@ -85,18 +88,10 @@ fn main() {
 
     // Following natural co-ordinate system (y up, x right)
     for row in (0..IMAGE_HEIGHT).rev() {
-        // * Notice the use of stderr here, since
-        // * stdout is used for the image data.
-        // eprint!("\rScanlines remaining: {:3}", row);
-        // stderr().flush().unwrap();
-        progress_bar.inc(1);
-
         for column in 0..IMAGE_WIDTH {
             // TODO: Move to PNG
             let pixel_color = output[row as usize][column as usize];
             println!("{}", pixel_color.format_color());
         }
     }
-    // eprintln!("\nDone");
-    progress_bar.finish_with_message("done");
 }

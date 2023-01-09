@@ -204,9 +204,11 @@ impl Div<f32> for Vec4 {
     type Output = Self;
 
     fn div(self, rhs: f32) -> Self {
-        if rhs == 0. {
-            panic!("Zero division error!");
-        }
+        let rhs = if rhs == 0. {
+            EPSILON
+        } else {
+            rhs
+        };
 
         Self::new(
             self[0] / rhs,
@@ -220,9 +222,12 @@ impl Div<f32> for Vec4 {
 // * Multiplying with another vector (We are doing a scalar multiplication here)
 impl DivAssign<f32> for Vec4 {
     fn div_assign(&mut self, rhs: f32) {
-        if rhs == 0. {
-            panic!("Zero division error!");
-        }
+        let rhs = if rhs == 0. {
+            EPSILON
+        } else {
+            rhs
+        };
+
 
         self[0] /= rhs;
         self[1] /= rhs;

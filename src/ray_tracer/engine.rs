@@ -4,7 +4,8 @@ use super::{
     utils::{map_to_range, Ray},
 };
 use crate::scene::Scene;
-use crate::utils::vec4::{Color, Point};
+use crate::utils::vec4::Color;
+use indicatif::ProgressBar;
 use rand::prelude::*;
 
 const WHITE: Color = Color {
@@ -113,10 +114,12 @@ impl Engine {
     }
 
     pub fn render(&self) -> Vec<Vec<Color>> {
+        let progress_bar = ProgressBar::new(self.image_height as u64);
         let mut rng = rand::thread_rng();
         let mut output: Vec<Vec<Color>> = vec![];
 
         for row in 0..self.image_height {
+            progress_bar.inc(1);
             output.push(vec![]);
             for column in 0..self.image_width {
                 let pixel_color = if self.anti_aliasing {
@@ -147,6 +150,7 @@ impl Engine {
             }
         }
 
+        progress_bar.finish_with_message("done");
         output
     }
 }
